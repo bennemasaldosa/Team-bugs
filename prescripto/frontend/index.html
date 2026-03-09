@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prescripto – Never Miss a Dose</title>
+    <!-- Link to the CSS file -->
+    <link rel="stylesheet" href="style.css">
+    <!-- Google Fonts for modern typography -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <!-- Header Section -->
+        <header>
+            <h1>Prescripto <span class="subtitle">– Never Miss a Dose</span></h1>
+            <p class="description">Convert your messy medication instructions into a clear, easy-to-follow daily schedule.</p>
+        </header>
+
+        <!-- Main Content area -->
+        <main>
+            <div class="input-section">
+                <label for="instructions">Enter your prescription instructions here:</label>
+                <!-- Large textarea for user input -->
+                <textarea id="instructions" placeholder="e.g.,&#10;Paracetamol after breakfast&#10;Antibiotic twice daily after food&#10;Vitamin D before sleep"></textarea>
+                <button id="generate-btn">Generate Schedule</button>
+            </div>
+
+            <!-- Dynamic Schedule Section -->
+            <div class="schedule-section">
+                <h2>Your Daily Schedule</h2>
+                <div class="cards-container">
+                    <!-- Morning Card -->
+                    <div class="time-card" id="morning-card">
+                        <div class="card-header morning">Morning</div>
+                        <ul class="medicine-list" id="morning-list">
+                            <!-- Medicines will appear here dynamically -->
+                        </ul>
+                    </div>
+                    
+                    <!-- Afternoon Card -->
+                    <div class="time-card" id="afternoon-card">
+                        <div class="card-header afternoon">Afternoon</div>
+                        <ul class="medicine-list" id="afternoon-list">
+                            <!-- Medicines will appear here dynamically -->
+                        </ul>
+                    </div>
+                    
+                    <!-- Evening Card -->
+                    <div class="time-card" id="evening-card">
+                        <div class="card-header evening">Evening</div>
+                        <ul class="medicine-list" id="evening-list">
+                            <!-- Medicines will appear here dynamically -->
+                        </ul>
+                    </div>
+                    
+                    <!-- Night Card -->
+                    <div class="time-card" id="night-card">
+                        <div class="card-header night">Night</div>
+                        <ul class="medicine-list" id="night-list">
+                            <!-- Medicines will appear here dynamically -->
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <!-- Link to the JavaScript file -->
+    <script src="script.js"></script>
+</body>
+</html>
