@@ -10,11 +10,11 @@
     --clr-text-main: #0f172a;
     --clr-text-muted: #64748b;
     --clr-border: #e2e8f0;
-    
+
     --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
     --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
     --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-    
+
     --transition: all 0.3s ease;
 }
 
@@ -85,7 +85,8 @@ body {
     font-weight: 500;
 }
 
-.nav-links a:hover, .nav-links li.active a {
+.nav-links a:hover,
+.nav-links li.active a {
     background-color: var(--clr-light-blue);
     color: var(--clr-blue);
 }
@@ -117,7 +118,8 @@ body {
     z-index: 5;
 }
 
-.header-left, .header-right {
+.header-left,
+.header-right {
     display: flex;
     align-items: center;
     gap: 1.5rem;
@@ -237,10 +239,25 @@ body {
     font-size: 1.5rem;
 }
 
-.stat-icon.uploader { background-color: var(--clr-light-blue); color: var(--clr-blue); }
-.stat-icon.medicines { background-color: #fce7f3; color: #db2777; }
-.stat-icon.compliance { background-color: var(--clr-green-soft); color: var(--clr-green); }
-.stat-icon.reminders { background-color: #fef3c7; color: #d97706; }
+.stat-icon.uploader {
+    background-color: var(--clr-light-blue);
+    color: var(--clr-blue);
+}
+
+.stat-icon.medicines {
+    background-color: #fce7f3;
+    color: #db2777;
+}
+
+.stat-icon.compliance {
+    background-color: var(--clr-green-soft);
+    color: var(--clr-green);
+}
+
+.stat-icon.reminders {
+    background-color: #fef3c7;
+    color: #d97706;
+}
 
 .stat-details h3 {
     font-size: 0.875rem;
@@ -270,41 +287,7 @@ body {
     color: #ef4444;
 }
 
-/* Chart Panel */
-.chart-panel {
-    margin-bottom: 2rem;
-    background: var(--clr-white);
-}
 
-.chart-options {
-    display: flex;
-    background: var(--clr-bg);
-    border-radius: 0.5rem;
-    padding: 0.25rem;
-}
-
-.chart-options button {
-    border: none;
-    background: transparent;
-    padding: 0.25rem 0.75rem;
-    border-radius: 0.25rem;
-    font-size: 0.8rem;
-    color: var(--clr-text-muted);
-    cursor: pointer;
-    transition: var(--transition);
-}
-
-.chart-options button.active {
-    background: var(--clr-white);
-    color: var(--clr-text-main);
-    box-shadow: var(--shadow-sm);
-}
-
-.chart-container {
-    padding: 1.5rem;
-    height: 350px;
-    width: 100%;
-}
 
 /* Panels Grid */
 .panels-grid {
@@ -313,7 +296,8 @@ body {
     gap: 1.5rem;
 }
 
-.column-left, .column-right {
+.column-left,
+.column-right {
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
@@ -413,7 +397,8 @@ body {
     transition: var(--transition);
 }
 
-.voice-btn:hover, .voice-btn.recording {
+.voice-btn:hover,
+.voice-btn.recording {
     background: var(--clr-blue);
     color: var(--clr-white);
 }
@@ -424,9 +409,17 @@ body {
 }
 
 @keyframes pulse {
-    0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
-    70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
-    100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+    0% {
+        box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
+    }
+
+    70% {
+        box-shadow: 0 0 0 10px rgba(239, 68, 68, 0);
+    }
+
+    100% {
+        box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
+    }
 }
 
 .action-row {
@@ -525,7 +518,8 @@ body {
     background: var(--clr-bg);
 }
 
-.upload-area:hover, .upload-area.dragover {
+.upload-area:hover,
+.upload-area.dragover {
     border-color: var(--clr-blue);
     background: var(--clr-light-blue);
 }
@@ -654,11 +648,11 @@ body {
     transition: var(--transition);
 }
 
-.custom-checkbox:hover input ~ .checkmark {
+.custom-checkbox:hover input~.checkmark {
     border-color: var(--clr-green);
 }
 
-.custom-checkbox input:checked ~ .checkmark {
+.custom-checkbox input:checked~.checkmark {
     background-color: var(--clr-green);
     border-color: var(--clr-green);
 }
@@ -669,7 +663,7 @@ body {
     display: none;
 }
 
-.custom-checkbox input:checked ~ .checkmark:after {
+.custom-checkbox input:checked~.checkmark:after {
     display: block;
 }
 
@@ -696,7 +690,8 @@ body {
     border-collapse: collapse;
 }
 
-.medicine-table th, .medicine-table td {
+.medicine-table th,
+.medicine-table td {
     padding: 0.75rem 1rem;
     text-align: left;
     border-bottom: 1px solid var(--clr-border);
@@ -740,20 +735,20 @@ body {
     .sidebar {
         transform: translateX(-100%);
     }
-    
+
     .sidebar.active {
         transform: translateX(0);
     }
-    
+
     .main-content {
         margin-left: 0;
         width: 100%;
     }
-    
+
     .menu-btn {
         display: block;
     }
-    
+
     .search-bar {
         width: 200px;
     }
@@ -763,7 +758,9 @@ body {
     .search-bar {
         display: none;
     }
-    .header-left, .header-right {
+
+    .header-left,
+    .header-right {
         gap: 1rem;
     }
 }
