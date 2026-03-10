@@ -22,8 +22,9 @@
                 </div>
             </a>
             <ul class="nav-links">
-                <li class="active"><a href="/dashboard"><i class="fa-solid fa-chart-pie"></i> Dashboard</a></li>
-                <li><a href="/upload"><i class="fa-solid fa-cloud-arrow-up"></i> Upload Prescription</a></li>
+                <li><a href="/dashboard"><i class="fa-solid fa-chart-pie"></i> Dashboard</a></li>
+                <li class="active"><a href="/upload"><i class="fa-solid fa-cloud-arrow-up"></i> Upload Prescription</a>
+                </li>
                 <li><a href="/medicines"><i class="fa-solid fa-pills"></i> Medicine List</a></li>
                 <li><a href="/history"><i class="fa-solid fa-clock-rotate-left"></i> Prescription History</a></li>
                 <li><a href="/profile"><i class="fa-regular fa-user"></i> Profile</a></li>
@@ -113,8 +114,31 @@
                     </div>
                 </div>
 
-                <!-- Main Panels Grid -->
-                <div class="panels-grid">
+                <!-- Expanded Upload Section -->
+                <div class="panel upload-panel" style="margin-top: 2rem; padding: 3rem;">
+                    <div class="panel-header" style="justify-content: center; margin-bottom: 2rem;">
+                        <h2 style="font-size: 1.8rem; color: var(--clr-dark-blue);">Upload Prescription</h2>
+                    </div>
+                    <div class="upload-area" id="upload-area"
+                        style="min-height: 400px; display: flex; flex-direction: column; justify-content: center; align-items: center; border-width: 3px; font-size: 1.2rem;">
+                        <i class="fa-solid fa-cloud-arrow-up upload-icon"
+                            style="font-size: 5rem; margin-bottom: 1.5rem;"></i>
+                        <p>Click or drag image to upload and extract medicines</p>
+                        <p style="color: var(--clr-gray); font-size: 0.9rem; margin-top: 1rem;">Supported formats: JPG,
+                            PNG, PDF (Max 10MB)</p>
+                        <input type="file" id="file-input" hidden accept="image/*,.pdf">
+                    </div>
+                    <div id="upload-result" class="hidden" style="text-align: center; margin-top: 2rem;">
+                        <h3>Extraction Result</h3>
+                        <ul class="extracted-list" id="extracted-medicines"
+                            style="display: inline-block; text-align: left; min-width: 50%; padding: 1rem; border: 1px solid var(--clr-light-blue); border-radius: 8px;">
+                            <!-- Populated by JS -->
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Main Panels Grid (Hidden for this page) -->
+                <div class="panels-grid" style="display: none;">
                     <!-- Left Column -->
                     <div class="column-left">
                         <!-- Profile Panel -->

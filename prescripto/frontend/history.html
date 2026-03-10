@@ -22,10 +22,11 @@
                 </div>
             </a>
             <ul class="nav-links">
-                <li class="active"><a href="/dashboard"><i class="fa-solid fa-chart-pie"></i> Dashboard</a></li>
+                <li><a href="/dashboard"><i class="fa-solid fa-chart-pie"></i> Dashboard</a></li>
                 <li><a href="/upload"><i class="fa-solid fa-cloud-arrow-up"></i> Upload Prescription</a></li>
                 <li><a href="/medicines"><i class="fa-solid fa-pills"></i> Medicine List</a></li>
-                <li><a href="/history"><i class="fa-solid fa-clock-rotate-left"></i> Prescription History</a></li>
+                <li class="active"><a href="/history"><i class="fa-solid fa-clock-rotate-left"></i> Prescription
+                        History</a></li>
                 <li><a href="/profile"><i class="fa-regular fa-user"></i> Profile</a></li>
                 <li><a href="/settings"><i class="fa-solid fa-language"></i> Language Settings</a></li>
             </ul>
@@ -113,8 +114,70 @@
                     </div>
                 </div>
 
-                <!-- Main Panels Grid -->
-                <div class="panels-grid">
+                <!-- Expanded History Section -->
+                <div class="panel history-panel" style="margin-top: 2rem; padding: 2rem;">
+                    <div class="panel-header" style="margin-bottom: 2rem;">
+                        <h2 style="font-size: 1.8rem; color: var(--clr-dark-blue);">Medicine History & Details</h2>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="medicine-table" style="font-size: 1.1rem;">
+                            <thead>
+                                <tr>
+                                    <th style="padding: 1.5rem;">Medicine</th>
+                                    <th style="padding: 1.5rem;">Description</th>
+                                    <th style="padding: 1.5rem;">Prescribed By</th>
+                                    <th style="padding: 1.5rem;">Date Added</th>
+                                    <th style="padding: 1.5rem;">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td style="padding: 1.5rem;"><strong>Paracetamol</strong></td>
+                                    <td style="padding: 1.5rem;">Fever and pain relief</td>
+                                    <td style="padding: 1.5rem;">Dr. Smith</td>
+                                    <td style="padding: 1.5rem;">Oct 12, 2023</td>
+                                    <td style="padding: 1.5rem;"><span class="status-badge active"
+                                            style="font-size: 1rem; padding: 0.5rem 1rem;">Active</span></td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 1.5rem;"><strong>Amoxicillin</strong></td>
+                                    <td style="padding: 1.5rem;">Treats bacterial infections</td>
+                                    <td style="padding: 1.5rem;">Dr. Jones</td>
+                                    <td style="padding: 1.5rem;">Nov 05, 2023</td>
+                                    <td style="padding: 1.5rem;"><span class="status-badge active"
+                                            style="font-size: 1rem; padding: 0.5rem 1rem;">Active</span></td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 1.5rem;"><strong>Vitamin D</strong></td>
+                                    <td style="padding: 1.5rem;">Supports bone health</td>
+                                    <td style="padding: 1.5rem;">Dr. Smith</td>
+                                    <td style="padding: 1.5rem;">Jan 20, 2024</td>
+                                    <td style="padding: 1.5rem;"><span class="status-badge active"
+                                            style="font-size: 1rem; padding: 0.5rem 1rem;">Active</span></td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 1.5rem;"><strong>Ibuprofen</strong></td>
+                                    <td style="padding: 1.5rem;">Anti-inflammatory</td>
+                                    <td style="padding: 1.5rem;">Dr. Lee</td>
+                                    <td style="padding: 1.5rem;">Aug 15, 2023</td>
+                                    <td style="padding: 1.5rem;"><span class="status-badge inactive"
+                                            style="font-size: 1rem; padding: 0.5rem 1rem;">Past</span></td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 1.5rem;"><strong>Lisinopril</strong></td>
+                                    <td style="padding: 1.5rem;">Blood pressure</td>
+                                    <td style="padding: 1.5rem;">Dr. Patel</td>
+                                    <td style="padding: 1.5rem;">Mar 10, 2023</td>
+                                    <td style="padding: 1.5rem;"><span class="status-badge inactive"
+                                            style="font-size: 1rem; padding: 0.5rem 1rem;">Past</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Main Panels Grid (Hidden for this page) -->
+                <div class="panels-grid" style="display: none;">
                     <!-- Left Column -->
                     <div class="column-left">
                         <!-- Profile Panel -->

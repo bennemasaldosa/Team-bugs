@@ -108,6 +108,50 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
         });
+
+        // Make Chart Options functional
+        const chartOptions = document.querySelectorAll('.chart-options button');
+        chartOptions.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                chartOptions.forEach(b => b.classList.remove('active'));
+                const target = e.target;
+                target.classList.add('active');
+
+                const chartArea = Chart.getChart(ctx);
+                if (!chartArea) return;
+
+                if (target.textContent === 'Day') {
+                    chartArea.data.labels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+                    chartArea.data.datasets[0].data = [80, 85, 90, 85, 95, 90, 100];
+                    chartArea.data.datasets[1].data = [2, 1, 3, 2, 4, 3, 5];
+                } else if (target.textContent === 'Week') {
+                    chartArea.data.labels = ['Week 1', 'Week 2', 'Week 3', 'Week 4'];
+                    chartArea.data.datasets[0].data = [75, 80, 85, 90];
+                    chartArea.data.datasets[1].data = [10, 15, 12, 18];
+                } else {
+                    chartArea.data.labels = ['Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'];
+                    chartArea.data.datasets[0].data = [30, 25, 35, 28, 45, 35, 65, 55, 60, 36, 40, 52];
+                    chartArea.data.datasets[1].data = [23, 11, 22, 27, 13, 22, 37, 21, 44, 22, 30, 45];
+                }
+                chartArea.update();
+            });
+        });
+    }
+
+    // Identify current page based on URL to apply correct active state logic
+    const currentPath = window.location.pathname;
+
+    // Hide chart and top stats if not on dashboard page
+    const statsGrid = document.querySelector('.stats-grid');
+    const chartPanel = document.querySelector('.chart-panel');
+
+    if (currentPath !== '/' && currentPath !== '/dashboard' && currentPath !== '/index.html') {
+        if (statsGrid) statsGrid.style.display = 'none';
+        if (chartPanel) chartPanel.style.display = 'none';
+
+        // Hide generator if not on dashboard
+        const schedulePanel = document.querySelector('.schedule-panel');
+        if (schedulePanel) schedulePanel.style.display = 'none';
     }
 
     // Handle Upload Simulation
@@ -145,24 +189,24 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function simulateUpload() {
         uploadArea.innerHTML = '<i class="fa-solid fa-spinner fa-spin upload-icon"></i><p>Extracting medicines...</p>';
-        
+
         setTimeout(() => {
             uploadArea.classList.add('hidden');
             uploadResult.classList.remove('hidden');
-            
+
             const results = [
                 { name: 'Paracetamol', purpose: 'Fever relief', time: 'Morning' },
                 { name: 'Amoxicillin', purpose: 'Antibiotic', time: 'Afternoon' },
                 { name: 'Vitamin D', purpose: 'Bone health', time: 'Night' }
             ];
 
-            extractedList.innerHTML = results.map(item => 
+            extractedList.innerHTML = results.map(item =>
                 `<li>
                     <span><strong>${item.name}</strong> - ${item.purpose}</span>
                     <span class="badge-time">${item.time}</span>
                 </li>`
             ).join('');
-            
+
             // Allow resetting
             const resetBtn = document.createElement('button');
             resetBtn.className = 'btn-primary';
@@ -190,7 +234,7 @@ document.addEventListener('DOMContentLoaded', () => {
             voiceBtn.classList.add('recording');
             voiceBtn.innerHTML = '<i class="fa-solid fa-stop"></i>';
             instructionInput.placeholder = "Listening...";
-            
+
             // Simulating speech to text
             setTimeout(() => {
                 if (voiceBtn.classList.contains('recording')) {
@@ -233,14 +277,37 @@ document.addEventListener('DOMContentLoaded', () => {
             instructionInput.value = "Take Paracetamol in the morning, Amoxicillin in the afternoon, and Vitamin D at night.";
         }
 
-        const lang = scheduleLang.value;
-        const routine = scheduleTranslations[lang];
+        const btnOriginalText = generateBtn.innerHTML;
+        generateBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Generating...';
 
-        morningList.innerHTML = `<li>${routine.morning}</li>`;
-        afternoonList.innerHTML = `<li>${routine.afternoon}</li>`;
-        nightList.innerHTML = `<li>${routine.night}</li>`;
+        fetch('/generate_schedule', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ instructions: instructionInput.value })
+        })
+            .then(response => response.json())
+            .then(data => {
+                const formatList = (arr) => arr && arr.length > 0 ? arr.map(item => `<li>${item}</li>`).join('') : '<li style="color:#94a3b8;">None</li>';
 
-        generatedSchedule.classList.remove('hidden');
+                morningList.innerHTML = formatList(data.morning);
+                afternoonList.innerHTML = formatList(data.afternoon || []);
+                nightList.innerHTML = formatList(data.night || []);
+
+                generatedSchedule.classList.remove('hidden');
+                generateBtn.innerHTML = btnOriginalText;
+            })
+            .catch(err => {
+                console.error(err);
+                generateBtn.innerHTML = btnOriginalText;
+
+                // Fallback to translations if backend is unavailable
+                const lang = scheduleLang.value;
+                const routine = scheduleTranslations[lang] || scheduleTranslations['en'];
+                morningList.innerHTML = `<li>${routine.morning}</li>`;
+                afternoonList.innerHTML = `<li>${routine.afternoon}</li>`;
+                nightList.innerHTML = `<li>${routine.night}</li>`;
+                generatedSchedule.classList.remove('hidden');
+            });
     });
 
     // Intake Tracker Strike-through
@@ -262,4 +329,57 @@ document.addEventListener('DOMContentLoaded', () => {
     const dateSpan = document.getElementById('current-date');
     const today = new Date();
     dateSpan.textContent = today.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+
+    // Search Bar filtering
+    const searchInput = document.querySelector('.search-bar input');
+    if (searchInput) {
+        searchInput.addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase();
+
+            // Filter History Table
+            const rows = document.querySelectorAll('.medicine-table tbody tr');
+            rows.forEach(row => {
+                const medName = row.querySelector('td:first-child').textContent.toLowerCase();
+                const desc = row.querySelector('td:nth-child(2)').textContent.toLowerCase();
+                if (medName.includes(query) || desc.includes(query)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+
+            // Filter Intake Tracker
+            const trackerItems = document.querySelectorAll('.tracker-item');
+            trackerItems.forEach(item => {
+                const itemName = item.querySelector('h4').textContent.toLowerCase();
+                const itemDesc = item.querySelector('p').textContent.toLowerCase();
+                if (itemName.includes(query) || itemDesc.includes(query)) {
+                    item.style.display = 'flex';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        });
+    }
+
+    // Sidebar Active State handling (Now just closes the menu on mobile)
+    const navLinks = document.querySelectorAll('.nav-links li');
+    navLinks.forEach(item => {
+        item.addEventListener('click', (e) => {
+            // On mobile, close sidebar after clicking a link
+            if (window.innerWidth <= 768) {
+                sidebar.classList.remove('active');
+            }
+        });
+    });
+
+    // Global Language syncing
+    const globalLang = document.getElementById('global-lang');
+    if (globalLang) {
+        globalLang.addEventListener('change', (e) => {
+            if (scheduleLang) {
+                scheduleLang.value = e.target.value;
+            }
+        });
+    }
 });

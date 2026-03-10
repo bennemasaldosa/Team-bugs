@@ -22,11 +22,11 @@
                 </div>
             </a>
             <ul class="nav-links">
-                <li class="active"><a href="/dashboard"><i class="fa-solid fa-chart-pie"></i> Dashboard</a></li>
+                <li><a href="/dashboard"><i class="fa-solid fa-chart-pie"></i> Dashboard</a></li>
                 <li><a href="/upload"><i class="fa-solid fa-cloud-arrow-up"></i> Upload Prescription</a></li>
                 <li><a href="/medicines"><i class="fa-solid fa-pills"></i> Medicine List</a></li>
                 <li><a href="/history"><i class="fa-solid fa-clock-rotate-left"></i> Prescription History</a></li>
-                <li><a href="/profile"><i class="fa-regular fa-user"></i> Profile</a></li>
+                <li class="active"><a href="/profile"><i class="fa-regular fa-user"></i> Profile</a></li>
                 <li><a href="/settings"><i class="fa-solid fa-language"></i> Language Settings</a></li>
             </ul>
         </aside>
@@ -113,8 +113,70 @@
                     </div>
                 </div>
 
-                <!-- Main Panels Grid -->
-                <div class="panels-grid">
+                <!-- Expanded Profile Section -->
+                <div class="panel profile-panel" style="margin-top: 2rem; padding: 3rem;">
+                    <div class="panel-header"
+                        style="margin-bottom: 2rem; border-bottom: 1px solid var(--clr-light-blue); padding-bottom: 1rem;">
+                        <h2 style="font-size: 1.8rem; color: var(--clr-dark-blue);">Patient Profile Configuration</h2>
+                    </div>
+                    <div class="profile-details"
+                        style="display: flex; flex-direction: row; gap: 3rem; align-items: flex-start;">
+                        <img src="https://ui-avatars.com/api/?name=John+Doe&background=e0f2fe&color=0284c7&size=200"
+                            alt="John Doe" class="profile-img-large"
+                            style="width: 200px; height: 200px; border-radius: 50%; border: 4px solid var(--clr-light-blue);">
+                        <div class="info" style="flex: 1; font-size: 1.2rem;">
+                            <h2 style="font-size: 2.5rem; margin-bottom: 1rem; color: var(--clr-dark-blue);">John Doe
+                            </h2>
+
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 2rem;">
+                                <div>
+                                    <p style="color: var(--clr-gray); font-size: 0.9rem; margin-bottom: 0.2rem;">Age</p>
+                                    <p><strong>45 Years</strong></p>
+                                </div>
+                                <div>
+                                    <p style="color: var(--clr-gray); font-size: 0.9rem; margin-bottom: 0.2rem;">Gender
+                                    </p>
+                                    <p><strong>Male</strong></p>
+                                </div>
+                                <div>
+                                    <p style="color: var(--clr-gray); font-size: 0.9rem; margin-bottom: 0.2rem;">Blood
+                                        Group</p>
+                                    <p><strong>O Positive (O+)</strong></p>
+                                </div>
+                                <div>
+                                    <p style="color: var(--clr-gray); font-size: 0.9rem; margin-bottom: 0.2rem;">Height
+                                        / Weight</p>
+                                    <p><strong>178 cm / 82 kg</strong></p>
+                                </div>
+                            </div>
+
+                            <div style="margin-top: 2rem;">
+                                <p style="color: var(--clr-gray); font-size: 0.9rem; margin-bottom: 0.5rem;">Known
+                                    Conditions</p>
+                                <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                                    <span
+                                        style="background: var(--clr-light-blue); color: var(--clr-blue); padding: 0.5rem 1rem; border-radius: 20px; font-weight: 600;">Hypertension</span>
+                                    <span
+                                        style="background: var(--clr-light-blue); color: var(--clr-blue); padding: 0.5rem 1rem; border-radius: 20px; font-weight: 600;">Mild
+                                        Asthma</span>
+                                </div>
+                            </div>
+
+                            <div style="margin-top: 2rem;">
+                                <p style="color: var(--clr-gray); font-size: 0.9rem; margin-bottom: 0.5rem;">Emergency
+                                    Contact</p>
+                                <p><strong>Jane Doe (Wife) - +1 (555) 123-4567</strong></p>
+                            </div>
+
+                            <button class="btn-primary"
+                                style="margin-top: 3rem; padding: 1rem 2rem; font-size: 1.1rem;"><i
+                                    class="fa-solid fa-pen-to-square"></i> Edit Profile Information</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Main Panels Grid (Hidden for this page) -->
+                <div class="panels-grid" style="display: none;">
                     <!-- Left Column -->
                     <div class="column-left">
                         <!-- Profile Panel -->

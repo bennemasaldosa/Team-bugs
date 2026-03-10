@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prescripto - Home</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .home-container {
+            display: flex;
+            min-height: 100vh;
+            background: var(--clr-light);
+            font-family: 'Inter', sans-serif;
+        }
+
+        .home-left {
+            flex: 1;
+            background: var(--clr-blue);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 3rem;
+            text-align: center;
+        }
+
+        .home-right {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: white;
+            padding: 3rem;
+        }
+
+        .login-box {
+            background: white;
+            padding: 3rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            width: 100%;
+            max-width: 450px;
+            border: 1px solid var(--clr-light-blue);
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .login-header i {
+            font-size: 3rem;
+            color: var(--clr-blue);
+            margin-bottom: 1rem;
+        }
+
+        .login-header h2 {
+            font-size: 1.8rem;
+            color: var(--clr-dark-blue);
+        }
+
+        .input-group {
+            margin-bottom: 1.5rem;
+            text-align: left;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--clr-gray);
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border: 1px solid var(--clr-light-blue);
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: var(--clr-blue);
+            box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.1);
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 0.8rem;
+            background: var(--clr-blue);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+            margin-top: 1rem;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .login-btn:hover {
+            background: var(--clr-dark-blue);
+        }
+
+        .hero-stats {
+            margin-top: 3rem;
+            display: flex;
+            gap: 2rem;
+        }
+
+        .hero-stat {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 1.5rem;
+            border-radius: 12px;
+            text-align: center;
+            min-width: 150px;
+        }
+
+        .hero-stat p {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .hero-stat span {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="home-container">
+        <!-- Hero Section (Left) -->
+        <div class="home-left">
+            <i class="fa-solid fa-notes-medical" style="font-size: 5rem; margin-bottom: 1.5rem;"></i>
+            <h1 style="font-size: 3.5rem; margin-bottom: 1rem;">Prescripto</h1>
+            <p style="font-size: 1.2rem; opacity: 0.9; max-width: 500px; line-height: 1.6;">
+                Your intelligent healthcare companion. Upload prescriptions, manage medicine schedules, and track your
+                medical history seamlessly.
+            </p>
+
+            <div class="hero-stats">
+                <div class="hero-stat">
+                    <p>12k+</p>
+                    <span>Patients Managed</span>
+                </div>
+                <div class="hero-stat">
+                    <p>50k+</p>
+                    <span>Prescriptions Uploaded</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Login Section (Right) -->
+        <div class="home-right">
+            <div class="login-box">
+                <div class="login-header">
+                    <i class="fa-solid fa-user-doctor"></i>
+                    <h2>Patient Portal Login</h2>
+                    <p style="color: var(--clr-gray); font-size: 0.9rem; margin-top: 0.5rem;">Access your personalized
+                        medical dashboard</p>
+                </div>
+
+                <form action="/dashboard" method="GET">
+                    <div class="input-group">
+                        <label>Email Address</label>
+                        <input type="email" placeholder="patient@example.com" value="john.doe@example.com" required>
+                    </div>
+                    <div class="input-group">
+                        <label>Password</label>
+                        <input type="password" placeholder="••••••••" value="password123" required>
+                    </div>
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                        <label
+                            style="font-size: 0.9rem; color: var(--clr-gray); display: flex; align-items: center; gap: 0.5rem;">
+                            <input type="checkbox" checked> Remember Me
+                        </label>
+                        <a href="#" style="font-size: 0.9rem; color: var(--clr-blue); text-decoration: none;">Forgot
+                            Password?</a>
+                    </div>
+
+                    <button type="submit" class="login-btn">Login to Dashboard <i class="fa-solid fa-arrow-right"
+                            style="margin-left: 0.5rem;"></i></button>
+
+                    <p style="text-align: center; margin-top: 2rem; color: var(--clr-gray); font-size: 0.9rem;">
+                        Don't have an account? <a href="#"
+                            style="color: var(--clr-blue); text-decoration: none; font-weight: 600;">Sign up here</a>
+                    </p>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

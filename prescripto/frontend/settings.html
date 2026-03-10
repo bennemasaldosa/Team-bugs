@@ -22,12 +22,12 @@
                 </div>
             </a>
             <ul class="nav-links">
-                <li class="active"><a href="/dashboard"><i class="fa-solid fa-chart-pie"></i> Dashboard</a></li>
+                <li><a href="/dashboard"><i class="fa-solid fa-chart-pie"></i> Dashboard</a></li>
                 <li><a href="/upload"><i class="fa-solid fa-cloud-arrow-up"></i> Upload Prescription</a></li>
                 <li><a href="/medicines"><i class="fa-solid fa-pills"></i> Medicine List</a></li>
                 <li><a href="/history"><i class="fa-solid fa-clock-rotate-left"></i> Prescription History</a></li>
                 <li><a href="/profile"><i class="fa-regular fa-user"></i> Profile</a></li>
-                <li><a href="/settings"><i class="fa-solid fa-language"></i> Language Settings</a></li>
+                <li class="active"><a href="/settings"><i class="fa-solid fa-language"></i> Language Settings</a></li>
             </ul>
         </aside>
 
@@ -113,8 +113,59 @@
                     </div>
                 </div>
 
-                <!-- Main Panels Grid -->
-                <div class="panels-grid">
+                <!-- Expanded Settings Section -->
+                <div class="panel settings-panel" style="margin-top: 2rem; padding: 3rem;">
+                    <div class="panel-header"
+                        style="margin-bottom: 2rem; border-bottom: 1px solid var(--clr-light-blue); padding-bottom: 1rem;">
+                        <h2 style="font-size: 1.8rem; color: var(--clr-dark-blue);">Localization & Language Settings
+                        </h2>
+                    </div>
+
+                    <div style="max-width: 600px; font-size: 1.1rem;">
+                        <div style="margin-bottom: 2rem;">
+                            <label
+                                style="display: block; font-weight: 600; margin-bottom: 0.8rem; color: var(--clr-dark);">Display
+                                Language</label>
+                            <p style="color: var(--clr-gray); font-size: 0.9rem; margin-bottom: 1rem;">Choose the
+                                primary language for the application interface.</p>
+                            <select class="language-selector"
+                                style="width: 100%; padding: 1rem; font-size: 1.1rem; border: 2px solid var(--clr-light-blue); border-radius: 8px;">
+                                <option value="en" selected>English (US)</option>
+                                <option value="hi">हिंदी (Hindi)</option>
+                                <option value="kn">ಕನ್ನಡ (Kannada)</option>
+                                <option value="ta">தமிழ் (Tamil)</option>
+                                <option value="te">తెలుగు (Telugu)</option>
+                            </select>
+                        </div>
+
+                        <div style="margin-bottom: 3rem;">
+                            <label
+                                style="display: block; font-weight: 600; margin-bottom: 0.8rem; color: var(--clr-dark);">Voice
+                                Output Language</label>
+                            <p style="color: var(--clr-gray); font-size: 0.9rem; margin-bottom: 1rem;">Select the
+                                language to be used for Text-to-Speech schedule reading.</p>
+                            <div style="display: flex; gap: 1rem; align-items: center;">
+                                <select class="language-selector"
+                                    style="flex: 1; padding: 1rem; font-size: 1.1rem; border: 2px solid var(--clr-light-blue); border-radius: 8px;">
+                                    <option value="en" selected>English (US) - Female Voice</option>
+                                    <option value="hi">Hindi - Female Voice</option>
+                                    <option value="kn">Kannada - Male Voice</option>
+                                </select>
+                                <button class="btn-primary"
+                                    style="background: var(--clr-light-blue); color: var(--clr-blue);"><i
+                                        class="fa-solid fa-volume-high"></i> Test</button>
+                            </div>
+                        </div>
+
+                        <div style="padding-top: 2rem; border-top: 1px solid var(--clr-light-blue);">
+                            <button class="btn-primary"
+                                style="padding: 1rem 2.5rem; font-size: 1.1rem; width: 100%;">Save Settings</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Main Panels Grid (Hidden for this page) -->
+                <div class="panels-grid" style="display: none;">
                     <!-- Left Column -->
                     <div class="column-left">
                         <!-- Profile Panel -->
