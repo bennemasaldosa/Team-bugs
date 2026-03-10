@@ -240,6 +240,7 @@ body {
 .stat-icon.uploader { background-color: var(--clr-light-blue); color: var(--clr-blue); }
 .stat-icon.medicines { background-color: #fce7f3; color: #db2777; }
 .stat-icon.compliance { background-color: var(--clr-green-soft); color: var(--clr-green); }
+.stat-icon.reminders { background-color: #fef3c7; color: #d97706; }
 
 .stat-details h3 {
     font-size: 0.875rem;
@@ -251,6 +252,58 @@ body {
     font-size: 1.5rem;
     font-weight: 700;
     color: var(--clr-text-main);
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+}
+
+.stat-growth {
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+.stat-growth.success {
+    color: var(--clr-green);
+}
+
+.stat-growth.danger {
+    color: #ef4444;
+}
+
+/* Chart Panel */
+.chart-panel {
+    margin-bottom: 2rem;
+    background: var(--clr-white);
+}
+
+.chart-options {
+    display: flex;
+    background: var(--clr-bg);
+    border-radius: 0.5rem;
+    padding: 0.25rem;
+}
+
+.chart-options button {
+    border: none;
+    background: transparent;
+    padding: 0.25rem 0.75rem;
+    border-radius: 0.25rem;
+    font-size: 0.8rem;
+    color: var(--clr-text-muted);
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.chart-options button.active {
+    background: var(--clr-white);
+    color: var(--clr-text-main);
+    box-shadow: var(--shadow-sm);
+}
+
+.chart-container {
+    padding: 1.5rem;
+    height: 350px;
+    width: 100%;
 }
 
 /* Panels Grid */
