@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Support - Prescripto</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="support-page">
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <a href="/" style="text-decoration: none; color: inherit; display: block;">
+                <div class="sidebar-header">
+                    <i class="fa-solid fa-notes-medical logo-icon"></i>
+                    <h2>Prescripto</h2>
+                </div>
+            </a>
+            <ul class="nav-links">
+                <li><a href="/dashboard"><i class="fa-solid fa-chart-pie"></i> Dashboard</a></li>
+                <li><a href="/upload"><i class="fa-solid fa-cloud-arrow-up"></i> Upload Prescription</a></li>
+                <li><a href="/medicines"><i class="fa-solid fa-pills"></i> Medicine List</a></li>
+                <li><a href="/history"><i class="fa-solid fa-clock-rotate-left"></i> Prescription History</a></li>
+                <li><a href="/profile"><i class="fa-regular fa-user"></i> Profile</a></li>
+                <li><a href="/settings"><i class="fa-solid fa-language"></i> Language Settings</a></li>
+                <li class="active"><a href="/support"><i class="fa-solid fa-headset"></i> Customer Support</a></li>
+            </ul>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Top Navigation -->
+            <header class="top-nav">
+                <div class="header-left">
+                    <button id="sidebar-toggle" class="menu-btn"><i class="fa-solid fa-bars"></i></button>
+                    <div class="support-title-group">
+                        <h1>Customer Support</h1>
+                        <p>How can we help you today?</p>
+                    </div>
+                </div>
+                <div class="header-right">
+                    <div class="user-profile">
+                        <img src="https://ui-avatars.com/api/?name=John+Doe&background=e0f2fe&color=0284c7" alt="User Avatar" class="avatar">
+                    </div>
+                </div>
+            </header>
+
+            <div class="dashboard-content">
+                <!-- Search Hero Section -->
+                <div class="support-hero">
+                    <div class="hero-content">
+                        <h2>Search Help Articles</h2>
+                        <div class="support-search-large">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                            <input type="text" id="help-search" placeholder="Type keywords like 'upload', 'schedule', 'reminders'...">
+                        </div>
+                        <div class="search-suggestions">
+                            <button class="suggestion-tag" data-target="faq-schedule">Medication schedule</button>
+                            <button class="suggestion-tag" data-target="faq-upload">Upload prescription</button>
+                            <button class="suggestion-tag" data-target="faq-reminders">Set reminders</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panels-grid">
+                    <!-- Left Column: FAQ -->
+                    <div class="column-left">
+                        <div class="support-section-header">
+                            <h3>Frequently Asked Questions</h3>
+                        </div>
+                        <div class="faq-accordion" id="faq-list">
+                            <div class="faq-card" id="faq-schedule">
+                                <div class="faq-header">
+                                    <h4>How do I generate a medication schedule?</h4>
+                                    <i class="fa-solid fa-chevron-down"></i>
+                                </div>
+                                <div class="faq-body">
+                                    <p>Go to the <strong>Dashboard</strong> page, enter your prescription instructions in the input box, and click "Generate Schedule". The system will automatically organize medicines into Morning, Afternoon, Evening, and Night based on your instructions.</p>
+                                </div>
+                            </div>
+                            <div class="faq-card" id="faq-upload">
+                                <div class="faq-header">
+                                    <h4>Can I upload a prescription image?</h4>
+                                    <i class="fa-solid fa-chevron-down"></i>
+                                </div>
+                                <div class="faq-body">
+                                    <p>Yes, absolutely. Navigate to the <strong>Upload Prescription</strong> page and upload a clear photo or scanned image of your prescription. Our AI system will extract the medicine names and dosages automatically for you.</p>
+                                </div>
+                            </div>
+                            <div class="faq-card" id="faq-reminders">
+                                <div class="faq-header">
+                                    <h4>How do reminders work?</h4>
+                                    <i class="fa-solid fa-chevron-down"></i>
+                                </div>
+                                <div class="faq-body">
+                                    <p>You can configure reminder times from the <strong>Reminders</strong> page. Prescripto will send you notifications at the specific times you've set, ensuring you never miss a dose. Make sure your browser notifications are enabled.</p>
+                                </div>
+                            </div>
+                            <div class="faq-card" id="faq-incorrect">
+                                <div class="faq-header">
+                                    <h4>What if the schedule is incorrect?</h4>
+                                    <i class="fa-solid fa-chevron-down"></i>
+                                </div>
+                                <div class="faq-body">
+                                    <p>Our system is highly accurate, but if you notice an error, you can edit the instructions and regenerate the schedule. If you still have trouble, please use the contact form on this page to reach our team.</p>
+                                </div>
+                            </div>
+
+                            <!-- Empty state message -->
+                            <div id="no-results" class="empty-faq-state" style="display: none;">
+                                <i class="fa-solid fa-magnifying-glass-chart"></i>
+                                <p>No help articles found for this keyword.</p>
+                                <button onclick="window.location.reload()" class="btn-text">View all FAQs</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Column: Support Form & Info -->
+                    <div class="column-right">
+                        <div class="panel support-panel">
+                            <div class="panel-header">
+                                <h3>Send Support Request</h3>
+                            </div>
+                            <form id="support-form" class="support-form" novalidate>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="support-name">Full Name</label>
+                                        <input type="text" id="support-name" placeholder="John Doe">
+                                        <span class="error-msg" id="name-error"></span>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="support-email">Email Address</label>
+                                        <input type="email" id="support-email" placeholder="john@example.com">
+                                        <span class="error-msg" id="email-error"></span>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="issue-type">Topic of Inquiry</label>
+                                    <select id="issue-type">
+                                        <option value="" disabled selected>Select an issue category</option>
+                                        <option value="login">Login & Account</option>
+                                        <option value="upload">Prescription Upload</option>
+                                        <option value="generator">Schedule Generation</option>
+                                        <option value="reminder">Reminder Notifications</option>
+                                        <option value="incorrect">Inaccurate Schedule</option>
+                                        <option value="other">General Support</option>
+                                    </select>
+                                    <span class="error-msg" id="issue-error"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label for="support-message">Message Details</label>
+                                    <textarea id="support-message" rows="5" placeholder="Please describe your issue in detail..."></textarea>
+                                    <span class="error-msg" id="message-error"></span>
+                                </div>
+                                <button type="submit" class="btn-primary support-submit">Submit Request</button>
+                            </form>
+                        </div>
+
+                        <div class="panel contact-panel">
+                            <div class="panel-header">
+                                <h3>Direct Support</h3>
+                            </div>
+                            <div class="contact-card-list">
+                                <div class="contact-card-item">
+                                    <div class="contact-icon"><i class="fa-solid fa-envelope"></i></div>
+                                    <div class="contact-text">
+                                        <span class="contact-label">Email Support</span>
+                                        <span class="contact-value">prescriptosupport@gmail.com</span>
+                                    </div>
+                                </div>
+                                <div class="contact-card-item">
+                                    <div class="contact-icon"><i class="fa-solid fa-clock"></i></div>
+                                    <div class="contact-text">
+                                        <span class="contact-label">Available Hours</span>
+                                        <span class="contact-value">24/7 Support Available</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="support-emergency-badge">
+                                <i class="fa-solid fa-shield-halved"></i>
+                                <p><strong>Disclaimer:</strong> Prescripto is a scheduling assistant, not a medical provider. For emergencies, please contact your doctor immediately.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

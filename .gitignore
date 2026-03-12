@@ -1,0 +1,7 @@
+# Prescripto Git Ignore
+.env
+__pycache__/
+*.pyc
+flask_session/
+node_modules/
+.DS_Store
