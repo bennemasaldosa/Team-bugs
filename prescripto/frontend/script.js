@@ -375,24 +375,32 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    /* --- Manual Auth Logic (Login/Register) --- */
-    const tabLogin = document.getElementById('tab-login');
-    const tabRegister = document.getElementById('tab-register');
-    const loginSection = document.getElementById('login-section');
-    const registerSection = document.getElementById('register-section');
-    const authMessage = document.getElementById('auth-message');
-
     if (tabLogin && tabRegister) {
-        // Initial check for Google Client ID
-        const googleIdTag = document.getElementById('g_id_onload');
-        const googleStatus = document.getElementById('google-signin-status');
-        if (googleIdTag && googleIdTag.getAttribute('data-client_id').includes('your_google_client_id')) {
-            console.warn("Prescripto: Google Client ID is not configured. Enabling Simulation Mode.");
-            if (googleStatus) googleStatus.style.display = 'block';
-            // Hide the real button if unconfigured
-            const realGoogleBtn = document.querySelector('.g_id_signin');
-            if (realGoogleBtn) realGoogleBtn.style.display = 'none';
-        }
+        // Dynamic check for Google Client ID
+        fetch('/api/config')
+            .then(res => res.json())
+            .then(config => {
+                const googleIdTag = document.getElementById('g_id_onload');
+                const googleStatus = document.getElementById('google-signin-status');
+                
+                if (googleIdTag && config.google_client_id && config.google_client_id !== "your_google_client_id_here") {
+                    googleIdTag.setAttribute('data-client_id', config.google_client_id);
+                    // Re-initialize Google Sign-in if it was already loaded
+                    if (window.google && window.google.accounts) {
+                        google.accounts.id.initialize({
+                            client_id: config.google_client_id,
+                            callback: handleCredentialResponse
+                        });
+                        google.accounts.id.renderButton(
+                            document.querySelector(".g_id_signin"),
+                            { theme: "outline", size: "large", shape: "pill" }
+                        );
+                    }
+                } else {
+                    console.warn("Prescripto: Google Client ID is not configured.");
+                    if (googleStatus) googleStatus.style.display = 'block';
+                }
+            });
 
         tabLogin.addEventListener('click', () => {
             tabLogin.classList.add('active');
@@ -535,32 +543,5 @@ document.addEventListener('DOMContentLoaded', () => {
             })
             .catch(err => console.error('Error fetching user info:', err));
     }
-
-    /* --- Demo & Simulation Helpers --- */
-    window.simulateGoogleLogin = async () => {
-        showAuthMessage('Simulating Google Auth...', false);
-        try {
-            const response = await fetch('/api/login', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email: "demo.user@gmail.com", password: "demo_password", is_demo: true })
-            });
-            const data = await response.json();
-            if (data.status === 'success') window.location.href = data.redirect;
-        } catch (err) {
-            window.location.href = '/dashboard';
-        }
-    };
-
-    window.useDemoAccount = () => {
-        const emailInput = document.getElementById('login-email');
-        const passInput = document.getElementById('login-password');
-        if (emailInput && passInput) {
-            emailInput.value = "demo.user@gmail.com";
-            passInput.value = "demo_password";
-            const loginForm = document.getElementById('manual-login-form');
-            if (loginForm) loginForm.dispatchEvent(new Event('submit'));
-        }
-    };
 });
 

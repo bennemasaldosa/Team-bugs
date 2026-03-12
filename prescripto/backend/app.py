@@ -14,6 +14,7 @@ from pymongo import MongoClient
 from bson import ObjectId
 from functools import wraps
 import secrets
+import sqlite3
 
 # Load environment variables
 load_dotenv()
@@ -27,12 +28,99 @@ app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'default_secret_key')
 app.config['SESSION_TYPE'] = 'filesystem'
 app.config['GOOGLE_CLIENT_ID'] = os.getenv('GOOGLE_CLIENT_ID')
 
-# MongoDB Setup
+# MongoDB Setup (or SQLite fallback)
 mongo_uri = os.getenv('MONGO_URI', 'mongodb://localhost:27017/prescripto')
-client = MongoClient(mongo_uri)
-db = client.get_database()
-users_coll = db.users
-reset_tokens_coll = db.password_reset_tokens
+
+# --- Database Helper --- (Shared logic for Mongo and SQLite)
+class Storage:
+    def __init__(self):
+        self.use_sqlite = False
+        self.client = None
+        self.db = None
+        self.users = None
+        self.reset_tokens = None # For MongoDB only
+
+        try:
+            self.client = MongoClient(mongo_uri, serverSelectionTimeoutMS=2000)
+            self.client.server_info() # Trigger connection check
+            self.db = self.client.prescripto
+            self.users = self.db.users
+            self.reset_tokens = self.db.password_reset_tokens
+            print("Database: Connected to MongoDB")
+        except Exception as e:
+            print(f"Database: MongoDB connection failed ({e}). Falling back to SQLite.")
+            self.use_sqlite = True
+            self.sqlite_db = 'prescripto.db'
+            self._init_sqlite()
+
+    def _init_sqlite(self):
+        conn = sqlite3.connect(self.sqlite_db)
+        c = conn.cursor()
+        c.execute('''CREATE TABLE IF NOT EXISTS users 
+                     (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, email TEXT UNIQUE, 
+                      password_hash TEXT, google_id TEXT, profile_picture TEXT, 
+                      created_at DATETIME, last_login DATETIME)''')
+        conn.commit()
+        conn.close()
+
+    def get_user_by_email(self, email):
+        if not self.use_sqlite:
+            return self.users.find_one({'email': email})
+        else:
+            conn = sqlite3.connect(self.sqlite_db)
+            conn.row_factory = sqlite3.Row
+            user = conn.execute("SELECT * FROM users WHERE email = ?", (email,)).fetchone()
+            conn.close()
+            return dict(user) if user else None
+
+    def insert_user(self, user_data):
+        if not self.use_sqlite:
+            return self.users.insert_one(user_data).inserted_id
+        else:
+            conn = sqlite3.connect(self.sqlite_db)
+            # Convert datetime objects to ISO format strings for SQLite
+            for key, value in user_data.items():
+                if isinstance(value, datetime.datetime):
+                    user_data[key] = value.isoformat()
+            
+            keys = ', '.join(user_data.keys())
+            placeholders = ', '.join(['?'] * len(user_data))
+            cursor = conn.execute(f"INSERT INTO users ({keys}) VALUES ({placeholders})", list(user_data.values()))
+            conn.commit()
+            last_id = cursor.lastrowid
+            conn.close()
+            return last_id
+
+    def update_user_last_login(self, email):
+        now = datetime.datetime.now()
+        if not self.use_sqlite:
+            self.users.update_one({'email': email}, {'$set': {'last_login': now}})
+        else:
+            conn = sqlite3.connect(self.sqlite_db)
+            conn.execute("UPDATE users SET last_login = ? WHERE email = ?", (now.isoformat(), email))
+            conn.commit()
+            conn.close()
+
+    def update_user_google_info(self, user_id, google_id, picture):
+        if not self.use_sqlite:
+            self.users.update_one(
+                {'_id': user_id}, 
+                {'$set': {
+                    'google_id': google_id,
+                    'profile_picture': picture,
+                    'last_login': datetime.datetime.now()
+                }}
+            )
+        else:
+            conn = sqlite3.connect(self.sqlite_db)
+            conn.execute("UPDATE users SET google_id = ?, profile_picture = ?, last_login = ? WHERE id = ?", 
+                         (google_id, picture, datetime.datetime.now().isoformat(), user_id))
+            conn.commit()
+            conn.close()
+
+storage = Storage()
+users_coll = storage.users # For backward compatibility with existing code that uses users_coll
+reset_tokens_coll = storage.reset_tokens # For backward compatibility, will be None if SQLite is used
 
 # Initialize Session
 Session(app)
@@ -120,48 +208,43 @@ def register():
     email = data.get('email')
     password = data.get('password')
 
+    # Check if user already exists
+    if storage.get_user_by_email(email):
+        return jsonify({"status": "error", "message": "Email already registered"}), 400
+
     hashed = hash_password(password)
     try:
-        user_id = users_coll.insert_one({
+        user_id = storage.insert_user({
             'name': name,
             'email': email,
             'password_hash': hashed,
             'created_at': datetime.datetime.now(),
             'last_login': datetime.datetime.now()
-        }).inserted_id
+        })
         return jsonify({"status": "success", "message": "User registered successfully"})
     except Exception as e:
         print(f"Registration DB Error: {e}")
-        return jsonify({"status": "error", "message": "Database connection error. Is MongoDB running?"}), 500
+        return jsonify({"status": "error", "message": "Database storage error. Please try again."}), 500
 
 @app.route('/api/login', methods=['POST'])
 def login_api():
     data = request.json
     email = data.get('email')
     password = data.get('password')
-    is_demo = data.get('is_demo', False)
-
-    if is_demo:
-        session['user'] = {
-            'email': email or "demo.user@prescripto.com",
-            'name': "Demo User",
-            'picture': "https://ui-avatars.com/api/?name=Demo+User&background=e0f2fe&color=0284c7"
-        }
-        return jsonify({"status": "success", "redirect": "/dashboard"})
 
     try:
-        user = users_coll.find_one({'email': email})
+        user = storage.get_user_by_email(email)
         if user and user.get('password_hash') and check_password(password, user['password_hash']):
             session['user'] = {
                 'email': user['email'],
                 'name': user['name'],
                 'picture': user.get('profile_picture', f"https://ui-avatars.com/api/?name={user['name'].replace(' ', '+')}&background=e0f2fe&color=0284c7")
             }
-            users_coll.update_one({'_id': user['_id']}, {'$set': {'last_login': datetime.datetime.now()}})
+            storage.update_user_last_login(email)
             return jsonify({"status": "success", "redirect": "/dashboard"})
     except Exception as e:
         print(f"Login DB Error: {e}")
-        return jsonify({"status": "error", "message": "Database connection error. Please check backend logs."}), 500
+        return jsonify({"status": "error", "message": "Database connection error."}), 500
 
     return jsonify({"status": "error", "message": "Invalid email or password"}), 401
 
@@ -201,6 +284,13 @@ def support():
     """Serve the customer care page"""
     return send_from_directory(frontend_dir, 'customer-care.html')
 
+@app.route('/api/config')
+def get_config():
+    """Return public configuration for the frontend"""
+    return jsonify({
+        "google_client_id": app.config.get('GOOGLE_CLIENT_ID') or "your_google_client_id_here"
+    })
+
 # --- API Endpoints ---
 def user_info():
     """Return current user info from session"""
@@ -217,8 +307,8 @@ def google_login():
     try:
         idinfo = id_token.verify_oauth2_token(token, requests.Request(), app.config['GOOGLE_CLIENT_ID'])
 
-        # Find or create user in MongoDB
-        user = users_coll.find_one({'email': idinfo['email']})
+        # Find or create user in MongoDB/SQLite
+        user = storage.get_user_by_email(idinfo['email'])
         if not user:
             # Create new user if not exists
             user_data = {
@@ -229,17 +319,10 @@ def google_login():
                 'created_at': datetime.datetime.now(),
                 'last_login': datetime.datetime.now()
             }
-            users_coll.insert_one(user_data)
+            storage.insert_user(user_data)
         else:
             # Update last login and sync picture
-            users_coll.update_one(
-                {'_id': user['_id']}, 
-                {'$set': {
-                    'google_id': idinfo['sub'],
-                    'last_login': datetime.datetime.now(),
-                    'profile_picture': idinfo.get('picture')
-                }}
-            )
+            storage.update_user_google_info(user['_id'] if '_id' in user else user['id'], idinfo['sub'], idinfo.get('picture'))
 
         session['user'] = {
             'email': idinfo['email'],
@@ -254,50 +337,70 @@ def google_login():
 
 @app.route('/api/request-password-reset', methods=['POST'])
 def request_password_reset():
-    data = request.json
-    email = data.get('email')
-
-    user = users_coll.find_one({'email': email})
-    if not user:
-        # For security, don't reveal if user exists. Just return success.
-        return jsonify({"status": "success", "message": "If this email is registered, a reset link will be sent."})
-
-    # Generate token
-    token = secrets.token_urlsafe(32)
-    expires = datetime.datetime.now() + datetime.timedelta(hours=1)
-
-    reset_tokens_coll.update_one(
-        {'email': email},
-        {'$set': {'token': token, 'expires': expires}},
-        upsert=True
-    )
-
-    # Send email (In a real app, use the actual domain)
-    reset_link = f"{request.host_url}reset-password?token={token}"
-    email_body = f"Hello {user['name']},\n\nYou requested to reset your Prescripto password. Click the link below to set a new password:\n\n{reset_link}\n\nThis link will expire in 1 hour."
+    email = request.json.get('email')
+    user = storage.get_user_by_email(email)
     
-    if send_email(email, "Reset your Prescripto password", email_body):
-        return jsonify({"status": "success", "message": "Reset link sent to your email."})
-    else:
-        return jsonify({"status": "error", "message": "Failed to send email. Please try again later."}), 500
+    if user:
+        token = secrets.token_urlsafe(32)
+        if not storage.use_sqlite:
+            storage.reset_tokens.insert_one({
+                'email': email,
+                'token': token,
+                'created_at': datetime.datetime.now()
+            })
+        else:
+            conn = sqlite3.connect(storage.sqlite_db)
+            conn.execute("CREATE TABLE IF NOT EXISTS reset_tokens (email TEXT, token TEXT, created_at DATETIME)")
+            conn.execute("INSERT INTO reset_tokens (email, token, created_at) VALUES (?, ?, ?)", 
+                         (email, token, datetime.datetime.now().isoformat()))
+            conn.commit()
+            conn.close()
+
+        reset_link = f"{request.host_url}reset-password?token={token}"
+        subject = "Reset Your Prescripto Password"
+        body = f"Hello,\n\nClick the link below to reset your password:\n{reset_link}\n\nThis link will expire soon."
+        
+        if send_email(email, subject, body):
+            return jsonify({"status": "success", "message": "Password reset link sent to your email"})
+        else:
+            print(f"DEBUG: Reset link for {email}: {reset_link}")
+            return jsonify({"status": "success", "message": "Demo Mode: Email sending is not configured, but reset link was generated. Check backend console."})
+    
+    return jsonify({"status": "error", "message": "Email not found"}), 404
 
 @app.route('/api/reset-password', methods=['POST'])
 def reset_password():
     data = request.json
     token = data.get('token')
-    new_password = data.get('new_password')
+    new_password = data.get('password')
 
-    token_record = reset_tokens_coll.find_one({'token': token})
-    if not token_record or token_record['expires'] < datetime.datetime.now():
-        return jsonify({"status": "error", "message": "Invalid or expired token"}), 400
+    token_data = None
+    if not storage.use_sqlite:
+        token_data = storage.reset_tokens.find_one({'token': token})
+    else:
+        conn = sqlite3.connect(storage.sqlite_db)
+        conn.row_factory = sqlite3.Row
+        token_data = conn.execute("SELECT * FROM reset_tokens WHERE token = ?", (token,)).fetchone()
+        conn.close()
+        if token_data: token_data = dict(token_data)
 
-    email = token_record['email']
-    hashed = hash_password(new_password)
+    if token_data:
+        email = token_data['email']
+        new_hashed = hash_password(new_password)
+        
+        if not storage.use_sqlite:
+            storage.users.update_one({'email': email}, {'$set': {'password_hash': new_hashed}})
+            storage.reset_tokens.delete_one({'token': token})
+        else:
+            conn = sqlite3.connect(storage.sqlite_db)
+            conn.execute("UPDATE users SET password_hash = ? WHERE email = ?", (new_hashed, email))
+            conn.execute("DELETE FROM reset_tokens WHERE token = ?", (token,))
+            conn.commit()
+            conn.close()
 
-    users_coll.update_one({'email': email}, {'$set': {'password_hash': hashed}})
-    reset_tokens_coll.delete_one({'email': email})
-
-    return jsonify({"status": "success", "message": "Password updated successfully"})
+        return jsonify({"status": "success", "message": "Password updated successfully"})
+    
+    return jsonify({"status": "error", "message": "Invalid or expired token"}), 400
 
 # --- Pages (Password Reset) ---
 
